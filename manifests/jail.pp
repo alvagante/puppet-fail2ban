@@ -37,7 +37,6 @@ define fail2ban::jail (
   $findtime  = '',
   $enable    = true ) {
 
-  include concat::setup
   include fail2ban
 
   $real_jailname = $jailname ? {
@@ -79,9 +78,12 @@ define fail2ban::jail (
     default   => $action,
   }
 
-  $real_logpath = $logpath ? {
-    ''      => '',
-    default => $logpath,
+  $array_logpath = is_array($logpath) ? {
+    false     => $logpath ? {
+      ''      => [],
+      default => [$logpath],
+    },
+    default   => $logpath,
   }
 
   $real_maxretry = $maxretry ? {
